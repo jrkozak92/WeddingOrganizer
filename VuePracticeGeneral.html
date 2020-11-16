@@ -1,0 +1,240 @@
+<head>
+    <title></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Handlee">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="vpg.js"></script>
+    <style>
+        body{
+            font-family:"Roboto", sans-serif;
+            text-align:center;
+            background-image:url("bg.jpg");
+            background-color:white;
+            background-size:cover;
+        }
+
+        .LOV{
+            font-weight:bold;
+            font-family:"Tangerine", serif;
+            font-size:48pt;
+            text-shadow:2px 2px darkgrey;
+        }
+
+        #venueList{
+            width:80%;
+            min-height:80%;
+            vertical-align:center;
+            margin:auto;
+            margin-top:5vh;
+            padding-top:2vh;
+            border-radius:20px;
+            background-color:rgba(255, 255, 255,.9);
+        }
+
+        .list{
+            color:black;
+            text-shadow:1px 1px darkgrey;
+            font-family:"Handlee", sans-serif;
+            font-weight:bold;
+            margin:auto;
+            padding-top:0px;
+            max-width:30%;
+            text-align:left;
+            font-size:18pt;
+            white-space:nowrap;
+        }
+
+        ul{
+            list-style-type:none;
+            margin:auto;
+            padding:5px;
+        }
+
+        li{
+            margin:auto;
+            padding:5px;
+        }
+
+        .button{
+            color:navy;
+            font-weight:bold;
+            font-size:18px;
+            font-family:"Handlee", sans-serif;
+            background:transparent;
+            border-radius:10px;
+            width:80px;
+            height:30px;
+            margin-bottom:10px;
+            margin-left:5px;
+        }
+
+        .swapButton{
+            color:navy;
+            font-weight:bold;
+            font-size:18px;
+            font-family:"Handlee", sans-serif;
+            background-color:rgba(115,115,115,.3);
+            border-radius:10px;
+            width:200px;
+            height:50px;
+            margin:10px;
+            box-shadow:2px 2px darkgrey;
+        }
+
+        #newVenue{
+            height:30px;
+            width:300px;
+            border-radius:7px;
+            font-family:"Handlee", sans-serif;
+            font-weight:700;
+            margin-bottom:5px;
+        }
+
+        #details{
+            width:80%;
+            min-height:80%;
+            vertical-align:center;
+            margin:auto;
+            margin-top:5vh;
+            padding-top:2vh;
+            border-radius:20px;
+            background-color:rgba(255, 255, 255,.9);
+        }
+
+        #guestList{
+            width:80%;
+            min-height:80%;
+            vertical-align:center;
+            margin:auto;
+            margin-top:5vh;
+            padding-top:2vh;
+            border-radius:20px;
+            background-color:rgba(255, 255, 255,.9);
+        }
+
+        .removeButton{
+            margin-left:10px;
+            border:none;
+            background-color:transparent;
+            color:black;
+            font-size:10px;
+            cursor:pointer;
+        }
+
+        .details-box{
+            width:80%;
+            margin:auto;
+        }
+
+        .dheaderClosed{
+            color:white;
+            background-color:black;
+            text-align:center;
+            vertical-align:middle;
+            margin:0px;
+            height:30px;
+            font-size:20px;
+            font-weight:bold;
+            width:100%;
+            border:2px solid black;
+            border-radius:10px;
+        }
+
+        .dheaderClosed:focus{
+            outline: none;
+        }
+
+        .dheaderOpen{
+            color:white;
+            background-color:black;
+            text-align:center;
+            vertical-align:middle;
+            margin:0px;
+            height:30px;
+            font-size:20px;
+            font-weight:bold;
+            width:100%;
+            border:2px solid black;
+            border-top-left-radius:10px;
+            border-top-right-radius:10px;
+        }
+
+        .dheaderOpen:focus{
+            outline: none;
+        }
+
+        .dinfo{
+            color:black;
+            background-color:rgba(255,255,255,.5);
+            margin:0;
+            border:2px solid black;
+            border-bottom-left-radius:10px;
+            border-bottom-right-radius:10px;
+            /* overflow: hidden;
+            transition: height 0.2s ease-out; */
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div id="venueList" v-show="isListVisible">
+            <h2 class="LOV">List of Venues</h2>
+            <venue-list class="list"></venue-list>
+            <button class="swapButton" @click="goToDetails">Show Me the Details!</button>
+            <button class="swapButton" @click="goToGuests">Show Me the Guests!</button>
+        </div>
+        <div id="details" v-show="isDetailsVisible">
+            <h2 class="LOV">The Details</h2>
+            <details-list></details-list>
+            <button class="swapButton" @click="goToList">Show Me the List!</button>
+            <button class="swapButton" @click="goToGuests">Show Me the Guests!</button>
+        </div>
+        <div id="guestList" v-show="isGuestVisible">
+            <h2 class="LOV">Guest List</h2>
+            <button class="swapButton" @click="goToList">Show Me the List!</button>
+            <button class="swapButton" @click="goToDetails">Show Me the Details!</button>
+        </div>
+        <!-- Add Budget panel -->
+    </div>
+    <script>
+        let app = new Vue({
+            el:'#root',
+            data: {
+                venues: [],
+                newVenue: '',
+                isListVisible: true,
+                isDetailsVisible: false,
+                isGuestVisible: false,
+                detailsVisible: false,
+                dheader: 'dheaderClosed'
+            },
+            methods: {
+                goToDetails() {
+                    this.isDetailsVisible = true;
+                    this.isListVisible = false;
+                    this.isGuestVisible = false;
+                },
+                goToList() {
+                    this.isDetailsVisible = false;
+                    this.isListVisible = true;
+                    this.isGuestVisible = false;
+                },
+                goToGuests() {
+                    this.isDetailsVisible = false;
+                    this.isListVisible = false;
+                    this.isGuestVisible = true;
+                },
+                toggleDinfo() {
+                    if (this.detailsVisible === false) {
+                        this.detailsVisible = true;
+                        this.dheader = 'dheaderOpen';
+                    } else {
+                        this.detailsVisible = false;
+                        this.dheader = 'dheaderClosed';
+                    }
+                }
+            }
+        });
+    </script>
+</body>
